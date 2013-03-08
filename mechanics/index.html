@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+  <head>
+    <title>Some Page</title>
+    <script type="text/javascript" src="vector.js"></script>
+    <script type="text/javascript" src="mechanics.js"></script>
+    <script>
+      window.onload = function () {
+      var ctx = document.getElementById("can").getContext("2d");
+      debug = document.getElementById("debug");
+      //mechanicDraw(ctx);
+      //vectorTest(document.getElementById("debug"));
+      //mechanicTest(document.getElementById("debug"));
+      strutTest(ctx);
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="can" width="640" height="480"></canvas>
+    <section id="debug"></section>
+  </body>
+</html>
