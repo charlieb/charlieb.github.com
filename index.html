@@ -16,7 +16,7 @@
     <header>
       <div class="container">
         <h1>charlieb.github.com</h1>
-        <h2>Emergent Animations</h2>
+        <h2>Beautiful Canvas</h2>
 
         <section id="downloads">
           <a href="https://github.com/charlieb" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
@@ -26,32 +26,76 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>Welcome to GitHub Pages.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+        <h3>Petals</h3>
+        <p>This is a great example of a very simple algorithm giving rise to
+        complex and beautiful images.
+        </p>
+        <p>All there is to this algorithm is the idea that new petals try to
+        move in the direction that will give them as much room as possible.
+        </p>
+        <a href="petals/index.html">
+          <img src="images/petals.png">
+          <p> Click for live version.</p>
+        </a>
+        <p>You may think that I deliberately start the petals off in a
+        spiral but no, I just drop them in the middle and let them find their
+        own direction</p>
+        <p>Here's how</p>
+        <ol>
+          <li>Drop a petal in the center</li>
+          <li>Find the average position of all the other petals. This is the
+          least desirable direction.</li>
+          <li>Move in the opposite direction.</li>
+        </ol>
+        <p>That's all there is to it</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+        <p>This was inspired by <a href="http://youtu.be/14-NdQwKz9w?t=2m15s">this part of this Vi Hart
+          video</a> where she explains that this is exactly how real plants and
+        flowers work (<a
+          href="http://www.youtube.com/watch?v=ahXIMUkSXX0">watch all 3 natural
+          spiral videos</a>).
+        </p>
+        <hr>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+        <h3>Bacteria</h3>
+        <p>From the beautiful to the wonderfully ugly. This demo is a simple
+        bacteria like simulation</p>
+        <a href="bacteria/index.html">
+          <img src="images/bacteria.png">
+          <p> Click for live version.</p>
+        </a>
+        <p>The black are the bacteria, red ones are about to die. The brown is
+        erm ... waste.</p>
+        <p>The static picture really doesn't do justice to the nasty
+        suppurative roiling of the actual demo, check it out, ugh</p>
+        <p>So how does it work?</p>
+        <ul>
+          <li>An initial bacteria is dropped onto a clean surface</li>
+          <li>It starts to grow, when it reaches a certain size it will
+          split in two. The whole nasty mess starts from just a single
+          bug</li>
+          <li>Every once in a while each bacterium will create a pellet of
+          waste. Over this time this waste will disappear.</li>
+          <li>When a bacteria is touching a poop it will suffer from toxic
+          effects and get closer to death.</li>
+          <li>Bacteria try to stick to other bacteria, not too close but
+          they like to clump together, of course this increases the
+          concentration of their toxic excreta</li>
+          <p> The only way for the bacteria to die is from toxic overload.
+          There is no set lifetime nor a limit to the number of bacteria.
+          Their numbers are kept in check purely by the toxicity of their
+          waste.</p>
+          <p>For me that's the most interesting thing about this simulation.
+          There's a number in the source code for this that controls the level
+          of toxicity of the waste. Tiny changes in this number are the
+          difference between a population that immediately dies out, one that
+          multiplies out of control until my browser runs out of memory and is
+          killed and one that increases only up to a stable
+          population</p>
+          <p>There's a metaphor for humanity in there somewhere</p>
+          <hr>
 
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
       </section>
     </div>
 
