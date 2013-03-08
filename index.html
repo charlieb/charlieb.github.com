@@ -36,19 +36,22 @@
         </p>
         <a href="petals/index.html">
           <img src="images/petals.png">
-          <p> Click for live version.</p>
+          <p> Click for live version. Click to re-randomize.</p>
         </a>
         <p>You may think that I deliberately start the petals off in a
         spiral but no, I just drop them in the middle and let them find their
-        own direction</p>
-        <p>Here's how</p>
+        own direction.</p>
+        <p>Here's how:</p>
         <ol>
-          <li>Drop a petal in the center</li>
+          <li>Drop a petal in the center.</li>
           <li>Find the average position of all the other petals. This is the
           least desirable direction.</li>
           <li>Move in the opposite direction.</li>
         </ol>
-        <p>That's all there is to it</p>
+        <p>That's all there is to it.</p>
+        <p>Well, almost, just for fun I made the petals change the direction
+        they're pointing to make it a little more interesting once it's
+        finished and all the petal positions are fixed.</p>
 
         <p>This was inspired by <a href="http://youtu.be/14-NdQwKz9w?t=2m15s">this part of this Vi Hart
           video</a> where she explains that this is exactly how real plants and
@@ -74,27 +77,59 @@
           <li>An initial bacteria is dropped onto a clean surface</li>
           <li>It starts to grow, when it reaches a certain size it will
           split in two. The whole nasty mess starts from just a single
-          bug</li>
+          bug.</li>
           <li>Every once in a while each bacterium will create a pellet of
           waste. Over this time this waste will disappear.</li>
           <li>When a bacteria is touching a poop it will suffer from toxic
           effects and get closer to death.</li>
           <li>Bacteria try to stick to other bacteria, not too close but
           they like to clump together, of course this increases the
-          concentration of their toxic excreta</li>
-          <p> The only way for the bacteria to die is from toxic overload.
-          There is no set lifetime nor a limit to the number of bacteria.
-          Their numbers are kept in check purely by the toxicity of their
-          waste.</p>
-          <p>For me that's the most interesting thing about this simulation.
-          There's a number in the source code for this that controls the level
-          of toxicity of the waste. Tiny changes in this number are the
-          difference between a population that immediately dies out, one that
-          multiplies out of control until my browser runs out of memory and is
-          killed and one that increases only up to a stable
-          population</p>
-          <p>There's a metaphor for humanity in there somewhere</p>
-          <hr>
+          concentration of their toxic excreta.</li>
+        </ul>
+        <p> The only way for the bacteria to die is from toxic overload.
+        There is no set lifetime nor a limit to the number of bacteria.
+        Their numbers are kept in check purely by the toxicity of their
+        waste.</p>
+        <p>For me that's the most interesting thing about this simulation.
+        There's a number in the source code that controls the
+        of toxicity of the waste. Tiny changes in this number are the
+        difference between a population that immediately dies out, one that
+        multiplies out of control until my browser runs out of memory and
+        crashes and one that increases only up to a stable population.</p>
+        <p>There's a metaphor for humanity in there somewhere.</p>
+        <hr>
+
+        <h3>Bezier Curves</h3>
+        <p>Bezier curves are fairly simple parametric curves that smoothly move
+        between specified control points.</p>
+        <a href="bezier/index.html">
+          <img src="images/bezier.png">
+          <p> Click for animated version.</p>
+        </a>
+        <p>You can read all about the details of Bezier curves and play with
+        them at this excellent site: <a
+          href="http://processingjs.nihongoresources.com/bezierinfo"/>Bezier
+          curves - a primer</a></p>
+        <p>The trick here is that to look like a continuous loop each section
+        of the curve must line up with the next perfectly.</p>
+        <p>I don't think you can see the joins in the animation so that means I
+        must have got it right.</p>
+        <p>If you've looked at the demo then you can see that there's a little
+        more to it than just static curves but the rest is just picking the
+        control points and moving them around.</p>
+        <p>There are two sets of points that the curve moves through: one
+        spaced around the edge of a circle, alternating with ones spaced around
+        the edge of an ellipse.</p>
+        <p>Both the circle's radius and the two axes of the ellipse are changing
+        size in time with a sine wave. If you pick a point on the curve and
+        watch it you can see the characteristic fast-slow-fast movement of the
+        sine wave.</p>
+        <p>The points are also marching around the two shapes which is what gives
+        rise to the rotation of the figure overall. And not to be outdone the
+        ellipse is also rotating. You can see the curve reach out to its widest
+        point and how the widest point rotates around the figure.</p>
+
+
 
       </section>
     </div>
