@@ -26,6 +26,68 @@
 
     <div class="container">
       <section id="main_content">
+        <h3>Coral</h3>
+        <p>The nice branchy, jaggy shape of some corals is formed when baby
+        coral cells float through the water until they stick to something.</p>
+        <p>We can simulate this by filling an area with moving cells and having
+        them stop and calcify when they hit another calcified cell. This
+        process is started by adding a fixed "seed" in the center</p>
+        <a href="coral/nice.html">
+          <img src="images/coral.png">
+          <p>Click for live version</p>
+        </a>
+        <a href="coral/fast.html"><p>Click here for a faster, less pretty version</p></a>
+        <p>I had some speed issues with this one. Just drawing a couple of
+        thousand shaded circles many times a second proved to be a little too
+        much for my PC. I've provided a less pretty version that runs
+        significantly faster.</p>
+        <p>That wasn't the only performance problem I encountered.</p>
+        <p>The simulation starts with a couple of thousand live cells. Every live
+        cell has to check against every dead cell to see whether it has
+        collided.</p>
+        <p>This starts off fast enough but fairly rapidly goes to hell as more 
+        and more cells get captured.</p>
+        <ul>
+          <li>2000 live cells checking 1 calcified cell = 2000 distance
+          calculations.</li>
+          <li>1800 live cells checking 200 calcified cells = 360,000 distance
+          calculations.</li>
+          <li>1500 live cells checking 500 calcified cells = 750,000 distance
+          calculations.</li>
+          <li>1000 live cells checking 1000 calcified cell = 1,000,000 distance
+          calculations.</li>
+        </ul>
+        <p>Then things start to improve again as the number of live cells gets
+        below 1000.</p>
+        <p>I should probably mention that this is all happening 50 times a second.</p>
+        <p>It's fairly remarkable that it ran as fast as it did considering
+        that it had to calculate 50 million distances a second not to mention
+        running the rest of the program.</p>
+        <p>As you've probably gathered I was pretty sure that the distance 
+        calculation was the culprit because I could see the simulation start 
+        fast, slow down as it approached the worst case and then speed up again
+        but I profiled it anyway just to be sure. It was indeed the distance
+        calculation that was holding things up.</p>
+        <p>There are two ways, generally to speed a calculation up. Not doing
+        it is usually the best. I could have turned down the frame rate from 50
+        to 30 or reduced the number of cells in the simulation.</p>        
+        <p>The other way is to make the calculation faster. This is the one
+        that I went for.</p>
+        <p>To check if circles collide you have to check the distance between
+        their centers. If that distance is less is less than their combined
+        radii then they have collided.</p>
+        <p>Most of the time the two cells will be nowhere near one another so
+        it's reasonable to approximate the collision quickly, then do the more
+        accurate calculation if it's needed.</p>
+        <p>It's much faster to do a bounding box check first. Imagine there's a
+        box around each circle. To determine if the boxes overlap all you have
+        to do is compare coordinates and sizes; none of that fancy Pythagorean
+        square root nonsense.</p>
+        <p>This simple improvement gave an great increase in performance.</p>
+        <p>Here's the slow version if you're interested or just want to give
+        your browser a workout. <a href="coral/poor_perf.html">Slow slow
+          version</a></p>
+        <hr>
 
         <h3>Petals</h3>
         <p>This is a great example of a very simple algorithm giving rise to
