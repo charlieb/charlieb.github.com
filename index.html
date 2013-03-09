@@ -128,6 +128,45 @@
         rise to the rotation of the figure overall. And not to be outdone the
         ellipse is also rotating. You can see the curve reach out to its widest
         point and how the widest point rotates around the figure.</p>
+        <hr>
+
+        <h3>Flocking and Herding</h3>
+        <p>A game where the objective is to get the sheep dipped and keep them
+        away from the cliff.</p>
+        <a href="boids/index.html">
+          <img src="images/boids.png">
+          <p> Click to play.</p>
+        </a>
+        <p>You control the one with the red circle. All the others will run
+        away from you.</p>
+        <p>Use the arrow keys to move around: up to accelerate, down to
+        decelerate, left and right to turn.</p>
+        <p>Flocking and herding is a combination of three behaviours:
+        repulsion, alignment and attraction. These behaviours only require local
+        information, no overall controller is necessary. All the different
+        herds, flocks, schools, gaggles and murders you see in nature can be 
+        modelled with just these three behaviours.</p>
+        <ul>
+          <li>Repulsion: don't get too close to your neighbours, if you are too
+          close move away. This behaviour activates at the smallest range.</li>
+          <li>Alignment: try to match speed and direction with you fellows.
+          This behaviour activates at a moderate range.</li>
+          <li>Attraction: move towards other birds. This behaviour activates at
+          the largest distance.</li>
+        </ul>
+        <p>Attraction brings flocks together and keeps them together, repulsion
+        stops individuals from colliding with one-another and alignment is
+        responsible for the incredible feats of coordination and synchronised
+        movement that flocks are capable of.</p>
+        <p>Programs that flock like this are known as boids (bird like-object,
+        I prefer to think of it as bird-droids)</p>
+        <p>There's ton's of information out there about boids but I think this
+        page is the best: <a href"http://www.red3d.com/cwr/steer/">Craig
+          Reynolds' Steering Behaviors</a> which has great demos and
+        descriptions of a range of different programs like boids. Craig
+        Reynolds invented the boid so it's no wonder his page is the best</p>
+        <hr>
+
 
 
 
