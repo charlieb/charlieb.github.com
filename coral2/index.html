@@ -1,0 +1,26 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../stylesheets/demos.css" media="screen" />
+  <title>Petals</title>
+  <script type="text/javascript" src="../vector/vector.js"></script>
+  <script type="text/javascript" src="coral.js"></script>
+  <script type="text/javascript">
+    window.onload = function() {
+    var ctx = document.getElementById('canvas1').getContext('2d');
+    test(ctx);
+    }
+    window.onclick = function() { 
+      var ctx = document.getElementById('canvas1').getContext('2d');
+      test(ctx);
+    };
+  </script>
+</head>
+<body>
+<section id="testing"></section>
+<section>
+  <canvas id="canvas1" width="700" height="700">
+    <p>Your browser doesn't support canvas.</p>
+  </canvas>
+</section>
+</body>
+</html>

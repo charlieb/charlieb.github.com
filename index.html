@@ -26,6 +26,32 @@
 
     <div class="container">
       <section id="main_content">
+        <h3>More Coral</h3>
+        <p>Here I used a different algorithm than the one below and also
+        introduced colour.</p>
+        <p>I think this algorithm gives a nicer shape, clearer branches and
+        more empty space, plus the colours can really pop!</p>
+        <a href="coral2/index.html">
+          <img src="images/coral2.png">
+          <p>Click for live version, click again for restart</p>
+        </a>
+        <p>This version only has a single active cell at any given time so
+        doesn't suffer from the multiplicative effects of the one below.</p>
+        <p>The downside of that is that it's less interesting to watch so to
+        offset that I added colour!</p>
+        <p>The method for picking colours is pretty simple but effective:</p>
+        <ol>
+          <li>Pick a starting colour. This is represented as 3 values red,
+          green and blue.</li>
+          <li>Pick an ending colour. Now we have 2 points in the 3 dimensional
+          space of red, green and blue.</li>
+          <li>Draw an imaginary line between those two colour points and walk
+          the line, one step per cell added</li>
+          <li>When you reach the ending colour, pick a new colour and head off
+          towards that one.</li>
+        </ol>
+
+        <hr>
         <h3>Coral</h3>
         <p>The nice branchy, jaggy shape of some corals is formed when baby
         coral cells float through the water until they stick to something.</p>
@@ -34,7 +60,7 @@
         process is started by adding a fixed "seed" in the center</p>
         <a href="coral/nice.html">
           <img src="images/coral.png">
-          <p>Click for live version</p>
+          <p>Click for live version, click again to restart</p>
         </a>
         <a href="coral/fast.html"><p>Click here for a faster, less pretty version</p></a>
         <p>I had some speed issues with this one. Just drawing a couple of
