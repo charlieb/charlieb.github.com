@@ -81,7 +81,7 @@ var test = function(ctx) {
         if(limit.r > 0)
           for(var i = 0; i < boids.length; i++) boids[i].iterate(boids, i, limit);
         ctx.fillStyle = "#000"
-        ctx.fillRect(0, 0, 1280, 1024);
+        ctx.fillRect(0, 0, 800, 800);
         for(var i = 0; i < boids.length; i++) boids[i].draw(ctx, new Vector(center_offset_size * Math.cos(a), center_offset_size * Math.sin(a))); 
         a += da;
       }, 20));

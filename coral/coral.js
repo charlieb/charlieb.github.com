@@ -151,7 +151,7 @@ var test = function(ctx, draw_type) {
           }
         }
         ctx.fillStyle = "#000"
-        ctx.fillRect(0, 0, 1280, 1024);
+        ctx.fillRect(0, 0, 600, 600);
         if(draw_type === 1) {
           for(var i = 0; i < motes.length; i++) motes[i].draw_fast(ctx); 
           for(var i = 0; i < fixed.length; i++) fixed[i].draw_fast(ctx); 

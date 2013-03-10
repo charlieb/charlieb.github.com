@@ -128,7 +128,7 @@ var test = function(ctx) {
 
 	    for(var i = 0; i < boids.length; i++) if(Math.random() < 0.05) spoor.push(new Spoor(boids[i].pos.x, boids[i].pos.y)); 
 
-        ctx.clearRect(0, 0, 1280, 1024);
+      ctx.clearRect(0, 0, 800. 800);
 
 	    for(var i = 0; i < spoor.length; i++) spoor[i].draw(ctx); 
 	    for(var i = 0; i < boids.length; i++) boids[i].draw(ctx); 
@@ -138,10 +138,4 @@ var test = function(ctx) {
 
 	}, 20);
     boids.push(new Boid(320 + 0.5 - Math.random(), 200 + 0.5 - Math.random()));
-    /*
-    setInterval(function() { 
-        if(boids.length < 250)
-            boids.push(new Boid(320 + 0.5 - Math.random(), 200 + 0.5 - Math.random())); },
-            1000);
-            */
 }
