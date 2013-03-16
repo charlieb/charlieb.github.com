@@ -120,6 +120,15 @@ Vector.prototype = {
   inRectangle: function(vmin, vmax) {
     return this.x >= vmin.x && this.x <= vmax.x &&
     this.y >= vmin.y && this.y <= vmax.y;
+  },
+  inCircle: function(p, r) {
+    if(this.x < p.x - r || this.x > p.x + r || this.y < p.y -r || this.y > p.y + r)
+      return false;
+    var m = this.sub(p).mag();
+    if(m > r)
+      return false;
+    else
+      return true;
   }
 }
 
