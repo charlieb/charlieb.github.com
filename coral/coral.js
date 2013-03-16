@@ -62,7 +62,7 @@ Particle.prototype.iterate = function(motes, limit) {
 
     // Another bounding box check for speed
     // If we're in an inscribed square no need to do the circle check
-    if((this.pos.x > limit.x - limit.inner_size && this.pos.x < limit.x + limit.inner_size) ||
+    if((this.pos.x > limit.x - limit.inner_size && this.pos.x < limit.x + limit.inner_size) &&
        (this.pos.y > limit.y - limit.inner_size && this.pos.y < limit.y + limit.inner_size))
        return;
 
@@ -109,7 +109,7 @@ var test = function(ctx, draw_type) {
     var motes = new Array();
     var fixed = new Array();
     var limit =  {x: 300, y:300, r:200, inner_size:0}
-    limit.inner_size = limit.size * Math.sin(Math.PI / 8);
+    limit.inner_size = limit.size * Math.sin(Math.PI / 4);
 
     for(var i =0; i < intervals.length; i++) clearInterval(intervals[i]);
     intervals = new Array();

@@ -12,6 +12,12 @@ Boid.prototype.toString = function() {
 Boid.prototype.applyExclusion = function(boids, self_idx, limit) {
   for(i = 0; i < boids.length; ++i) {
     if(i == self_idx) continue;
+    // Bounding box check first for speed
+    if(boids[i].pos.x + boids[i].exp < this.pos.x - this.exp ||
+      boids[i].pos.x - boids[i].exp > this.pos.x + this.exp ||
+      boids[i].pos.y + boids[i].exp < this.pos.y - this.exp ||
+      boids[i].pos.y - boids[i].exp > this.pos.y + this.exp)
+      continue;
     diff = this.pos.sub(boids[i].pos);
     dir = diff.norm();
     mag = diff.mag();
@@ -24,6 +30,12 @@ Boid.prototype.applyExclusion = function(boids, self_idx, limit) {
       this.pos.iadd(dir.mul(this.exc + boids[i].exc - mag));
     }
   }
+
+  // Another bounding box check for speed
+  // If we're in an inscribed square no need to do the circle check
+  if((this.pos.x > limit.x - limit.inner_size && this.pos.x < limit.x + limit.inner_size) &&
+    (this.pos.y > limit.y - limit.inner_size && this.pos.y < limit.y + limit.inner_size))
+  return;
   diff = this.pos.sub(limit);
   dir = diff.norm();
   mag = diff.mag();
@@ -79,9 +91,11 @@ Boid.prototype.draw = function(ctx) {
 }
 var test = function(ctx) {
   var boids = new Array();
-  var limit = {x:320, y:240, r:200};
-  for(var i = 0; i < 200; ++i) 
-    boids.push(new Boid(limit.x - limit.r + Math.random() * limit.r * 2, limit.y - limit.r + Math.random() * limit.r * 2));
+  var limit = {x:320, y:240, r:200, inner_size:0};
+  limit.inner_size = limit.r * Math.sin(Math.PI / 4);
+
+  for(var i = 0; i < 100; ++i) 
+    boids.push(new Boid(limit.x, limit.y));
 
   var its = 0;
   setInterval(function() { 
