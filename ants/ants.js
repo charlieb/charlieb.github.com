@@ -33,7 +33,7 @@ Spoor.prototype.draw = function(ctx) {
   this.colour.g = this.seen ? 0x00 : 0xFF;
   ctx.fillStyle = this.colour.toString();
   ctx.beginPath();
-  ctx.arc(this.pos.x, this.pos.y, 5, 0, Math.PI * 2, false);
+  ctx.arc(this.pos.x, this.pos.y, 2, 0, Math.PI * 2, false);
   ctx.closePath();
   ctx.fill();
 }
@@ -48,9 +48,10 @@ var Ant = function(x, y) {
   this.v = new Polar(1, Math.PI * 2 * Math.random());
   this.turn = 0;
   this.turns_left = 0;
-  this.exc = 5;
+  this.exc = 2;
 
   this.vision = {min:10, range:30, angle:Math.PI / 3};
+
 }
 Ant.prototype.toString = function() {
   return this.pos.toString() + ' -> ' + this.v.toString();
@@ -87,7 +88,7 @@ Ant.prototype.applyExclusion = function(ants, self_idx, limit) {
   }
 
 }
-Ant.prototype.iterate = function(ants, self_idx, spoor, food, limit) {
+Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
   var seen_food = false;
   // Look for food first
   if(this.food) {
@@ -129,6 +130,9 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, limit) {
   }
 
   var new_dir = null;
+  // get a vector to the nest
+  var to_nest = nest.pos.sub(this.pos).toPolar();
+
   if(seen_food) {
     new_dir = seen_food.pos.sub(this.pos).toPolar().dir;
     this.turns_left = 5;
@@ -137,9 +141,28 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, limit) {
     new_dir = spoor_pos.sub(this.pos).toPolar().dir;
     this.turns_left = 5;
   } else if(this.turns_left === 0) {
-    new_dir = Math.random() * Math.PI * 2;
+    // go back to the nest with food
+    if(this.food) { 
+      new_dir = to_nest.dir - Math.PI / 4 + Math.random() * Math.PI / 2;
+    // without food head away from the nest, either directly or more randomly
+    // depending on distance
+    } else if(to_nest.mag > nest.size * 1.5)
+      new_dir = Math.random() * Math.PI * 2;
+      //new_dir = to_nest.dir + Math.PI - 15 * Math.PI / 16 + Math.random() * 30 * Math.PI / 16;
+    else
+      new_dir = to_nest.dir + Math.PI - Math.PI / 4 + Math.random() * Math.PI / 2;
     //this.v.dir = new_dir;
+    new_dir %= Math.PI * 2
     this.turns_left = 20;
+  }
+
+  if(this.food) { 
+    // if we're at the nest drop the food
+    if(to_nest.mag < nest.size) {
+      food.splice(food.indexOf(this.food), 1);
+      this.food = false;
+        return; // rest for a turn :)
+    }
   }
 
   if(new_dir !== null) {
@@ -165,26 +188,28 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, limit) {
 
   this.pos.iadd(this.v.toVector());
 
-  if(Math.random() < 0.0125) spoor.push(new Spoor(this.pos.x, this.pos.y));
+  if(this.food && Math.random() < 0.125) spoor.push(new Spoor(this.pos.x, this.pos.y));
 }
 
 Ant.prototype.draw = function(ctx) {
   var v = this.v.toVector();
-
+/*
   ctx.strokeStyle = '#FF0000';
   ctx.beginPath();
   ctx.moveTo(this.pos.x, this.pos.y);
   ctx.lineTo(this.pos.x + v.mul(10).x, this.pos.y + v.mul(10).y);
   ctx.closePath();
   ctx.stroke();
-
-  ctx.strokeStyle = '#000000';
+*/
+  //ctx.strokeStyle = '#000000';
+  ctx.fillStyle = '#000000';
   ctx.beginPath();
   ctx.arc(this.pos.x, this.pos.y, this.exc, 0, Math.PI * 2, false);
   ctx.closePath();
-  ctx.stroke();
-
-  ctx.strokeStyle = '#444444';
+  ctx.fill();
+  //ctx.stroke();
+/*
+  ctx.strokeStyle = '#888888';
   ctx.beginPath();
   ctx.moveTo(this.pos.x, this.pos.y);
   var p = new Polar(1, this.v.dir);
@@ -194,20 +219,34 @@ Ant.prototype.draw = function(ctx) {
   ctx.arc(this.pos.x, this.pos.y, this.vision.range, p.dir, p.dir + this.vision.angle, false);
   ctx.closePath();
   ctx.stroke();
+  */
 }
 var test = function(ctx) {
   var limit = {x:320, y:240, r:200, inner_size:0};
   limit.inner_size = limit.r * Math.sin(Math.PI / 4);
 
+  var nest = {pos: new Vector(limit.x - limit.r + 20, limit.y), size:20};
+
   var ants = new Array();
-  for(var i = 0; i < 20; ++i) 
-    ants.push(new Ant(limit.x, limit.y));
+  for(var i = 0; i < 100; ++i) 
+    ants.push(new Ant(nest.pos.x + 2, nest.pos.y + 2));
 
   var spoor = new Array();
+
+  var food_clusters = new Array();
+  for(var i = 0; i < 5; i++) {
+    var pos = new Vector(limit.x - limit.r + Math.random() * limit.r * 2,
+                        limit.y - limit.r + Math.random() * limit.y * 2);
+    if(pos.inCircle(limit, limit.r - 10))
+      food_clusters.push(pos);
+    else
+      i--;
+  }
   var food = new Array();
-  for(var i = 0; i < 40; i++)
-    food.push(new Food(limit.x - limit.r + Math.random() * limit.r * 2,
-                      limit.y - limit.r + Math.random() * limit.r * 2));
+  for(var i = 0; i < 40; i++) {
+    var cluster = food_clusters[Math.floor(food_clusters.length * Math.random())];
+    food.push(new Food(cluster.x - 5 + Math.random() * 10, cluster.y - 5 + 10 * Math.random()));
+  }
 
   var its = 0;
   setInterval(function() { 
@@ -221,7 +260,7 @@ var test = function(ctx) {
     }
 
   for(var i = 0; i < ants.length; ++i) 
-    ants[i].iterate(ants, i, spoor, food, limit);
+    ants[i].iterate(ants, i, spoor, food, nest, limit);
 
   for(var j = 0; j < 20; j++)
     for(var i = 0; i < ants.length; ++i) 
@@ -236,6 +275,13 @@ var test = function(ctx) {
   var av = new Vector(0,0);
   av = new Vector(0,0);
   for(var i = 0; i < ants.length; ++i) av.iadd(ants[i].pos);
+
+  ctx.fillStyle = "#F80";
+  ctx.beginPath();
+  ctx.arc(nest.pos.x, nest.pos.y, 20, 0, Math.PI * 2, false);
+  ctx.closePath();
+  ctx.fill();
+
   its++;
   av.idiv(ants.length);
   ctx.fillStyle = "#F00"
