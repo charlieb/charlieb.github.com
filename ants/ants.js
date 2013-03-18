@@ -10,6 +10,18 @@ Colour.prototype.toString = function() {
   return 'rgba('+ Math.floor(this.r) +','+ Math.floor(this.g) +','+ Math.floor(this.b) +','+ this.a/255 +')';
 }
 
+var Rock = function(x,y,r) {
+  this.pos = new Vector(x,y);
+  this.r = r;
+}
+Rock.prototype.draw = function(ctx) {
+  ctx.fillStyle = '#888';
+  ctx.beginPath();
+  ctx.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * 2, false);
+  ctx.closePath();
+  ctx.fill();
+}
+
 var Food = function(x,y) {
   this.pos = new Vector(x,y);
 }
@@ -26,6 +38,7 @@ var Spoor = function(x,y) {
   this.age = 0;
   this.colour = new Colour();
   this.seen = false;
+  this.fade_rate = 2;
 }
 Spoor.prototype.draw = function(ctx) {
 
@@ -38,17 +51,19 @@ Spoor.prototype.draw = function(ctx) {
   ctx.fill();
 }
 Spoor.prototype.iterate = function() {
-  this.age++;
-  this.colour.a--;
+  this.age += this.fade_rate;
+  this.colour.a -= this.fade_rate;
 }
 
 
 var Ant = function(x, y) {
   this.pos = new Vector(x, y);
-  this.v = new Polar(1, Math.PI * 2 * Math.random());
+  this.v = new Polar(3, Math.PI * 2 * Math.random());
   this.turn = 0;
   this.turns_left = 0;
   this.exc = 2;
+  this.max_energy = 1000;
+  this.energy = this.max_energy;
 
   this.vision = {min:10, range:30, angle:Math.PI / 3};
 
@@ -89,6 +104,14 @@ Ant.prototype.applyExclusion = function(ants, self_idx, limit) {
 
 }
 Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
+  // We need to go back to the nest to get more energy.
+  // If not, we die and are re-incarnated in the nest
+  this.energy--;
+  if(this.energy <= 0) {
+    this.pos.x = nest.pos.x + 0.5 - Math.random();
+    this.pos.y = nest.pos.y + 0.5 - Math.random();
+  }
+
   var seen_food = false;
   // Look for food first
   if(this.food) {
@@ -132,13 +155,20 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
   var new_dir = null;
   // get a vector to the nest
   var to_nest = nest.pos.sub(this.pos).toPolar();
+  // if we're at the nest, replenish energy
+  if(to_nest.mag < nest.size) this.energy = this.max_energy;
 
-  if(seen_food) {
+  if(seen_food) { // go right for the food
     new_dir = seen_food.pos.sub(this.pos).toPolar().dir;
     this.turns_left = 5;
-  } else if(nspoor > 0) {
+  } else if(nspoor > 0) { // follow the trail
     spoor_pos.idiv(nspoor);
     new_dir = spoor_pos.sub(this.pos).toPolar().dir;
+    // if we're carrying food near the nest
+    // skew towards the nest a little
+    // use an average weighted X:1 towards the trail
+    if(this.food && to_nest.mag < nest.size * 2)
+      new_dir = (new_dir * 0 + to_nest.dir) / 1;
     this.turns_left = 5;
   } else if(this.turns_left === 0) {
     // go back to the nest with food
@@ -153,7 +183,7 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
       new_dir = to_nest.dir + Math.PI - Math.PI / 4 + Math.random() * Math.PI / 2;
     //this.v.dir = new_dir;
     new_dir %= Math.PI * 2
-    this.turns_left = 20;
+    this.turns_left = 10;
   }
 
   if(this.food) { 
@@ -161,7 +191,7 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
     if(to_nest.mag < nest.size) {
       food.splice(food.indexOf(this.food), 1);
       this.food = false;
-        return; // rest for a turn :)
+      return; // rest for a turn :)
     }
   }
 
@@ -188,7 +218,7 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
 
   this.pos.iadd(this.v.toVector());
 
-  if(this.food && Math.random() < 0.125) spoor.push(new Spoor(this.pos.x, this.pos.y));
+  if(this.food && Math.random() < 0.275) spoor.push(new Spoor(this.pos.x, this.pos.y));
 }
 
 Ant.prototype.draw = function(ctx) {
@@ -221,34 +251,80 @@ Ant.prototype.draw = function(ctx) {
   ctx.stroke();
   */
 }
+var random_point_in_circle = function(limit) {
+  var pos = new Vector(0,0);
+  while(!pos.inCircle(limit, limit.r - 10))
+    pos = new Vector(limit.x - limit.r + Math.random() * limit.r * 2,
+                    limit.y - limit.r + Math.random() * limit.y * 2);
+  return pos;
+}
+var exclude = function(pos, from) {
+  for(var i = 0; i < from.length; i++) {
+    if(!pos.inCircle(from[i], from.r)) continue;
+
+    diff = pos.sub(from[i].pos);
+    dir = diff.norm();
+    mag = diff.mag();
+
+    if(mag < from[i].r + 1) {
+      if(mag == 0)
+        pos.iadd((new Vector(1 - 2 * Math.random(), 1 - 2 * Math.random())).norm().mul(from[i].r + 1));
+      else 
+        pos.iadd(dir.mul(from[i].r - mag + 1));
+    }
+  }
+}
+var include = function(pos, limit) {
+  diff = pos.sub(limit);
+  dir = diff.norm();
+  mag = diff.mag();
+  if(mag > limit.r) {
+    var new_pos = new Polar(limit.r, diff.toPolar().dir).toVector().add(limit);
+    pos.x = new_pos.x;
+    pos.y = new_pos.y;
+  }
+}
+
 var test = function(ctx) {
-  var limit = {x:320, y:240, r:200, inner_size:0};
+  var limit = {x:300, y:300, r:300, inner_size:0};
   limit.inner_size = limit.r * Math.sin(Math.PI / 4);
 
-  var nest = {pos: new Vector(limit.x - limit.r + 20, limit.y), size:20};
+  var nest = {pos: new Vector(limit.x, limit.y), size:20};
 
   var ants = new Array();
-  for(var i = 0; i < 100; ++i) 
-    ants.push(new Ant(nest.pos.x + 2, nest.pos.y + 2));
+  for(var i = 0; i < 50; ++i) 
+    ants.push(new Ant(nest.pos.x + 0.5 - Math.random(), nest.pos.y + 0.5 - Math.random()));
 
   var spoor = new Array();
 
-  var food_clusters = new Array();
-  for(var i = 0; i < 5; i++) {
-    var pos = new Vector(limit.x - limit.r + Math.random() * limit.r * 2,
-                        limit.y - limit.r + Math.random() * limit.y * 2);
-    if(pos.inCircle(limit, limit.r - 10))
-      food_clusters.push(pos);
-    else
-      i--;
-  }
-  var food = new Array();
+
+  var rocks = new Array();
   for(var i = 0; i < 40; i++) {
-    var cluster = food_clusters[Math.floor(food_clusters.length * Math.random())];
-    food.push(new Food(cluster.x - 5 + Math.random() * 10, cluster.y - 5 + 10 * Math.random()));
+    var pos = random_point_in_circle(limit);
+    rocks.push(new Rock(pos.x, pos.y, 40 * Math.random()));
   }
 
-  var its = 0;
+  var food = new Array();
+  var refresh_food = function() {
+    while(food.length < 200) {
+      var pos = random_point_in_circle(limit);
+      exclude(pos, rocks);
+      var nfoods = 10 + 30 * Math.random();
+      for(var i = 0; i < nfoods; i++) {
+        pos.x += -5 + Math.random() * 10;
+        pos.y += -5 + 10 * Math.random();
+        for(var j = 0; j < 10; j++) {
+          exclude(pos, rocks);
+          include(pos, limit);
+        }
+        food.push(new Food(pos.x, pos.y));
+      }
+    }
+  }
+
+  refresh_food();
+  setInterval(refresh_food, 1000);
+  
   setInterval(function() { 
 
   for(var i = 0; i < spoor.length; ++i) spoor[i].seen = false;
@@ -263,26 +339,22 @@ var test = function(ctx) {
     ants[i].iterate(ants, i, spoor, food, nest, limit);
 
   for(var j = 0; j < 20; j++)
-    for(var i = 0; i < ants.length; ++i) 
+    for(var i = 0; i < ants.length; ++i) {
       ants[i].applyExclusion(ants, i, limit);
+      exclude(ants[i].pos, rocks);
+    }
 
-  ctx.clearRect(0, 0, 640, 480);
+  ctx.clearRect(0, 0, limit.x + limit.r + 10, limit.y + limit.r + 10);
+  for(var i = 0; i < rocks.length; ++i) rocks[i].draw(ctx);
   for(var i = 0; i < spoor.length; ++i) spoor[i].draw(ctx);
   for(var i = 0; i < food.length; ++i) food[i].draw(ctx);
   for(var i = 0; i < ants.length; ++i) ants[i].draw(ctx);
 
-
+/*
   var av = new Vector(0,0);
   av = new Vector(0,0);
   for(var i = 0; i < ants.length; ++i) av.iadd(ants[i].pos);
 
-  ctx.fillStyle = "#F80";
-  ctx.beginPath();
-  ctx.arc(nest.pos.x, nest.pos.y, 20, 0, Math.PI * 2, false);
-  ctx.closePath();
-  ctx.fill();
-
-  its++;
   av.idiv(ants.length);
   ctx.fillStyle = "#F00"
   ctx.beginPath()
@@ -295,5 +367,17 @@ var test = function(ctx) {
   ctx.arc(limit.x, limit.y, 3, 0, Math.PI * 2, false);
   ctx.closePath();
   ctx.fill();
+*/
+  ctx.fillStyle = "#F80";
+  ctx.beginPath();
+  ctx.arc(nest.pos.x, nest.pos.y, 20, 0, Math.PI * 2, false);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = "#000"
+  ctx.beginPath()
+  ctx.arc(limit.x, limit.y, limit.r, 0, Math.PI * 2, false);
+  ctx.closePath();
+  ctx.stroke();
   }, 50);
 }
