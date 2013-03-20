@@ -58,7 +58,7 @@ Spoor.prototype.iterate = function() {
 
 var Ant = function(x, y) {
   this.pos = new Vector(x, y);
-  this.v = new Polar(3, Math.PI * 2 * Math.random());
+  this.v = new Polar(2, Math.PI * 2 * Math.random());
   this.turn = 0;
   this.turns_left = 0;
   this.exc = 2;
@@ -102,6 +102,19 @@ Ant.prototype.applyExclusion = function(ants, self_idx, limit) {
     this.pos = new Polar(limit.r, diff.toPolar().dir).toVector().add(limit);
   }
 
+}
+var min_turn = function(dir1, dir2) {
+  // d1 is the distance through zero
+  var d1 = dir1 - dir2;
+  if(d1 < 0) d1 += Math.PI*2;
+  // d2 is the distance not through zero
+  var d2 = dir2 - dir1;
+  if(d2 < 0) d2 += Math.PI*2;
+
+  if(d1 < d2) 
+    return -d1;
+  else
+    return d2;
 }
 Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
   // We need to go back to the nest to get more energy.
@@ -160,30 +173,22 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
 
   if(seen_food) { // go right for the food
     new_dir = seen_food.pos.sub(this.pos).toPolar().dir;
-    this.turns_left = 5;
+    this.turns_left = 1;
   } else if(nspoor > 0) { // follow the trail
     spoor_pos.idiv(nspoor);
     new_dir = spoor_pos.sub(this.pos).toPolar().dir;
-    // if we're carrying food near the nest
-    // skew towards the nest a little
-    // use an average weighted X:1 towards the trail
-    if(this.food && to_nest.mag < nest.size * 2)
-      new_dir = (new_dir * 0 + to_nest.dir) / 1;
-    this.turns_left = 5;
+    // Don't carry food away from the nest
+    if(this.food && Math.abs(min_turn(new_dir, to_nest.dir)) > 7 * Math.PI / 16)
+        new_dir = to_nest.dir - Math.PI / 4 + Math.random() * Math.PI / 2;
+    this.turns_left = 1;
   } else if(this.turns_left === 0) {
-    // go back to the nest with food
-    if(this.food) { 
+    if(this.food) // go back to the nest with food
       new_dir = to_nest.dir - Math.PI / 4 + Math.random() * Math.PI / 2;
-    // without food head away from the nest, either directly or more randomly
-    // depending on distance
-    } else if(to_nest.mag > nest.size * 1.5)
+    else // without food do a random walk
       new_dir = Math.random() * Math.PI * 2;
-      //new_dir = to_nest.dir + Math.PI - 15 * Math.PI / 16 + Math.random() * 30 * Math.PI / 16;
-    else
-      new_dir = to_nest.dir + Math.PI - Math.PI / 4 + Math.random() * Math.PI / 2;
     //this.v.dir = new_dir;
-    new_dir %= Math.PI * 2
-    this.turns_left = 10;
+    //new_dir %= Math.PI * 2
+    this.turns_left = 20;
   }
 
   if(this.food) { 
@@ -196,17 +201,7 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
   }
 
   if(new_dir !== null) {
-    // d1 is the distance through zero
-    var d1 = this.v.dir - new_dir;
-    if(d1 < 0) d1 += Math.PI*2;
-    // d2 is the distance not through zero
-    var d2 = new_dir - this.v.dir;
-    if(d2 < 0) d2 += Math.PI*2;
-
-    if(d1 < d2) 
-        this.turn = -d1 / this.turns_left;
-     else
-        this.turn = d2 / this.turns_left;
+    this.turn = min_turn(this.v.dir, new_dir) / this.turns_left;
     //this.turn = 0;
     //this.v.dir = new_dir;
   }
@@ -292,14 +287,14 @@ var test = function(ctx) {
   var nest = {pos: new Vector(limit.x, limit.y), size:20};
 
   var ants = new Array();
-  for(var i = 0; i < 50; ++i) 
+  for(var i = 0; i < 150; ++i) 
     ants.push(new Ant(nest.pos.x + 0.5 - Math.random(), nest.pos.y + 0.5 - Math.random()));
 
   var spoor = new Array();
 
 
   var rocks = new Array();
-  for(var i = 0; i < 40; i++) {
+  for(var i = 0; i < 30; i++) {
     var pos = random_point_in_circle(limit);
     rocks.push(new Rock(pos.x, pos.y, 40 * Math.random()));
   }
@@ -338,7 +333,7 @@ var test = function(ctx) {
   for(var i = 0; i < ants.length; ++i) 
     ants[i].iterate(ants, i, spoor, food, nest, limit);
 
-  for(var j = 0; j < 20; j++)
+  for(var j = 0; j < 1; j++)
     for(var i = 0; i < ants.length; ++i) {
       ants[i].applyExclusion(ants, i, limit);
       exclude(ants[i].pos, rocks);
