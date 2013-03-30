@@ -65,7 +65,7 @@ var Ant = function(x, y) {
   this.max_energy = 1000;
   this.energy = this.max_energy;
 
-  this.vision = {min:10, range:30, angle:Math.PI / 3};
+  this.vision = {min:5, range:30, angle:Math.PI / 3};
 
 }
 Ant.prototype.toString = function() {
@@ -128,8 +128,9 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
   var seen_food = false;
   // Look for food first
   if(this.food) {
-    this.food.pos.x = this.pos.x;
-    this.food.pos.y = this.pos.y;
+    var v = this.v.toVector().mul(1.5);;
+    this.food.pos.x = this.pos.x + v.x;
+    this.food.pos.y = this.pos.y + v.y;
   } else {
     for(var i = 0; i < food.length; i++) {
       if(!food[i].carried && this.pos.inCircle(food[i].pos, this.vision.range)) {
@@ -213,7 +214,7 @@ Ant.prototype.iterate = function(ants, self_idx, spoor, food, nest, limit) {
 
   this.pos.iadd(this.v.toVector());
 
-  if(this.food && Math.random() < 0.275) spoor.push(new Spoor(this.pos.x, this.pos.y));
+  if(this.food && Math.random() < 0.15) spoor.push(new Spoor(this.pos.x, this.pos.y));
 }
 
 Ant.prototype.draw = function(ctx) {
@@ -229,11 +230,14 @@ Ant.prototype.draw = function(ctx) {
   //ctx.strokeStyle = '#000000';
   ctx.fillStyle = '#000000';
   ctx.beginPath();
-  ctx.arc(this.pos.x, this.pos.y, this.exc, 0, Math.PI * 2, false);
+  ctx.arc(this.pos.x, this.pos.y, this.exc - 0.5, 0, Math.PI * 2, false);
+  ctx.arc(this.pos.x - v.mul(this.exc - 0.5).x, this.pos.y - v.mul(this.exc - 0.5).y, 
+          this.exc, 0, Math.PI * 2, false);
   ctx.closePath();
   ctx.fill();
   //ctx.stroke();
-/*
+  
+  /*
   ctx.strokeStyle = '#888888';
   ctx.beginPath();
   ctx.moveTo(this.pos.x, this.pos.y);
@@ -287,7 +291,7 @@ var test = function(ctx) {
   var nest = {pos: new Vector(limit.x, limit.y), size:20};
 
   var ants = new Array();
-  for(var i = 0; i < 150; ++i) 
+  for(var i = 0; i < 100; ++i) 
     ants.push(new Ant(nest.pos.x + 0.5 - Math.random(), nest.pos.y + 0.5 - Math.random()));
 
   var spoor = new Array();
