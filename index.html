@@ -26,6 +26,49 @@
 
     <div class="container">
       <section id="main_content">
+        <h3>Ants</h3>
+        <p>How can such a simple, tiny creature be so successful? This program
+        shows how a very simple set of behaviours can result in some pretty
+        sophisticated and useful behaviour: food discovery and optimal gathering.</p>
+        <a href="ants/index.html">
+          <img src="images/ants.png">
+          <p>Click for live version, refresh page for reset</p>
+        </a>
+        <p>Each ant does three things:</p>
+        <ul>
+          <li>Walks around randomly until it encounters either food or a
+          pheromone marker.</li>
+          <li>If it sees food it will go and pick it up, then head more-or-less
+          in the direction of the nest.</li>
+          <li>If it sees a pheromone marker it will head towards it, if it sees
+          more than one it will head for the area with the greatest
+          concentration. This rule applies whether the ant is carrying food or
+          not but an ant will not carry food directly away from the nest.</li>
+        </ul>
+        <p>The picture above has:
+        <ul>
+          <li><font color="black"><b>Black</b></font> ants</li>
+          <li><font color="cyan">Cyan</font> food</li>
+          <li><font color="red">Red</font>/<font color="green">green</font> pheromones, when an ant sees a pheromone it turns red.
+          It's not really necessary but I think it adds a little extra visual
+          information.</li>
+          <li>Grey rocks - these are impassible obstacles for the ants</li>
+          <li><font color=orange>Orange</font> nest</li>
+        </ul>
+        <p>What you'll see is what looks like very complex behaviour. The ants
+        acting together will find food sources and exploit them. They will also
+        automatically load balance, which is to say more ants will get allocated to the
+        larger food sources. If there are two paths to a food source over time
+        the longer path will die out leaving only the shorter, more optimal
+        one. All this is just as a result of the ants and their interactions;
+        there is no manager or overseer.</p>
+        <p><a
+          href="http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms">Ant
+          Colony Optimization</a> algorithms have been used to solve numerous
+        real wold problem including job scheduling, traffic routing, electronic
+        circuit design and of course the travelling salesman problem.</p>
+
+        <hr>
         <h3>More Coral</h3>
         <p>Here I used a different algorithm than the one below and also
         introduced colour.</p>
