@@ -2,11 +2,11 @@
 <head>
   <title>Boids</title>
   <script type="text/javascript" src="../vector/vector.js"></script>
-  <script type="text/javascript" src="boids.js"></script>
+  <script type="text/javascript" src="attractor.js"></script>
   <script type="text/javascript">
     window.onload = function() {
     var ctx = document.getElementById('canvas1');
-    debug = document.getElementById('debug');
+    //debug = document.getElementById('debug');
     test(ctx);
     }
   </script>
@@ -16,11 +16,6 @@
     <canvas id="canvas1" width="640" height="480" float="left">
       <p>Your browser doesn't support canvas.</p>
     </canvas>
-  </div>
-  <div float="left">Arrow keys to move<br>
-    Keep the sheep away from the grey area<br>
-    Green area turns sheep green<br>
-    Make half the boids alive and green to win
   </div>
   <div id="debug"></div>
 </body>
