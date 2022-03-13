@@ -15,7 +15,6 @@ layout: default
     <li>
       <a href="{{ post.url }}">{{ post.title }}</a>
 	  {{ post.excerpt }}
-	  <p>
 	  <a href="{{ post.url }}">read more</a>
     </li>
   {% endfor %}
