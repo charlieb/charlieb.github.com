@@ -1,2 +1,1 @@
-# charlieb.github.com
-Emergent Animation
+{:toc}
