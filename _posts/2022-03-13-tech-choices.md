@@ -22,7 +22,7 @@ What about burn rate? Burn rate is the speed at which you lose excitement. Whate
 
 ### What do?
 
-There are two knobs to turn in this analogy to make the runway as long as possible: excitement level and boredom. The goal then is to increase excitement and boredom.
+There are two knobs to turn in this analogy to make the runway as long as possible: excitement level and boredom. The goal then is to increase excitement and decrease boredom.
 
 #### Increasing Excitement Level
 
