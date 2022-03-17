@@ -7,7 +7,7 @@ excerpt_separator: <!--more-->
 The Airlock, a Thought Experiment
 =================================
 
-The ship that I'm intending to saddle the player with initially is going to be pretty basic. One of the features it will be lacking is an airlock. Pretty soon the player probably will probably want to construct one. It might even turn out the be the tutorial. As you can tell this is some long term theoretical planning. I think it's still useful to chase down these thoughts, if only for the fun of the mental exercise. As you'll see, they can reveal things that I might not have otherwise thought about until much later.
+The ship that I'm intending to saddle the player with initially is going to be pretty basic. One of the features it will be lacking is an airlock. Pretty soon the player will probably want to construct one. It might even turn out the be the tutorial. As you can tell this is some long term theoretical planning. I think it's still useful to chase down these thoughts, if only for the fun of the mental exercise. As you'll see, they can reveal things that I might not have otherwise thought about until much later.
 
 ### The Airlock and the Agent
 
